@@ -26,7 +26,7 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
-
+View(story_df)
 
 ##
 
@@ -88,8 +88,25 @@ ui <- navbarPage("Iowa Liquor Sales",
                                         )
                           )
                  ),                 
-                 tabPanel("Sales Trend by Store",
-                          checkboxInput("us", "Show U.S.", FALSE),
+                 titlePanel("Sales Trade by Stores"),
+                 
+                 sidebarLayout(
+                   sidebarPanel(
+                     helpText("Create time series plot for time vs. stores' sale."),
+                     
+                     selectInput("Year",
+                                 label = "Year", 
+                                 choices = levels(story_new$year), 
+                                 selected = "2015")
+                     )
+                 ),
+                 selectInput("Month", 
+                             label = "Month",
+                             choices = levels(story_new$month),
+                             selected = "1"),
+                 selectInput("Day",
+                             label = "Day",
+                             choices = levels(story_new$day))
                           fluidRow(
                             plotlyOutput("points"),
                             column(6, 
