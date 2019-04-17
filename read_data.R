@@ -1,18 +1,26 @@
 library(tidyverse)
-library(rjson)
 library(jsonlite)
-library(RCurl)
-library(readr)
-d <- read_csv("Iowa_Liquor_Sales-Story.csv")
-view(d)
+library(purrr)
+
 
 ## procedure to get the same data as above
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
 full_url = paste0(basic_url, "?County=Story")
 
 
-full_url
-story <- jsonlite::read_json(full_url)
-story
-story <- as.data.frame(story)
-dim(story)
+story_info <- jsonlite::read_json(full_url)
+
+
+new.distinct.names <- story_info %>% 
+  purrr::map(.x, 
+             .f=~names(rbind.data.frame(rlist::list.flatten(.x),0)))
+
+unlisted <- story_info %>% 
+  purrr::map(.f = ~rbind.data.frame(unlist(.x, recursive=T, use.names=T)))
+
+unlisted.info <- purrr::map2(unlisted,
+                             new.distinct.names,
+                             .f= ~purrr::set_names(.x, .y))
+
+story_df <- do.call(plyr::rbind.fill, unlisted.info)
+
