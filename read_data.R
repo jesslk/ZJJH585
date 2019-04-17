@@ -3,7 +3,6 @@ library(jsonlite)
 library(purrr)
 library(rlist)
 
-
 ## procedure to get the same data as above
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
 full_url = paste0(basic_url, "?County=Story")
@@ -24,8 +23,14 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
-
-str(story_df)
-
+head(story_df)
+library(lubridate)
+library(stringr)
+library(tidyverse)
+story_df %>% 
+  mutate(new_date = gsub("T.*","", date),
+         year=year(new_date),
+         month=month(new_date),
+         day=day(new_date))
 
 
