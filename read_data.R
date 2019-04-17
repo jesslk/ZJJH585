@@ -1,7 +1,4 @@
 library(tidyverse)
-library(jsonlite)
-library(purrr)
-
 
 ## procedure to get the same data as above
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
@@ -23,4 +20,3 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
-
