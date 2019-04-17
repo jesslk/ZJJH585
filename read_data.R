@@ -1,6 +1,7 @@
 library(tidyverse)
 library(jsonlite)
 library(purrr)
+library(rlist)
 
 
 ## procedure to get the same data as above
@@ -23,4 +24,8 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
+
+str(story_df)
+
+
 
