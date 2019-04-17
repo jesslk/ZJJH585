@@ -1,6 +1,6 @@
 ---
 title: "README"
-author: "Hana Lee"
+author: "Zhenzhen Chen, Jessica Kueon, Hana Lee, Jing Zhao"
 date: "April 17, 2019"
 output: html_document
 ---
