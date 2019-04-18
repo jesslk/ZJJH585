@@ -59,7 +59,7 @@ ui <- fluidPage(
   
   mainPanel(
     tabsetPanel(
-      tabPanel("US Map", leafletOutput("map"))
+      tabPanel("Cornfield", leafletOutput("map"))
     )
   )
 )
