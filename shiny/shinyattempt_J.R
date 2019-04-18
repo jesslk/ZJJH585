@@ -27,9 +27,9 @@ unlisted.info <- purrr::map2(unlisted,
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
 as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
 
-story_new$lng <- as.numeric.factor(story_new$store_location.coordinates1)
-story_new$lat <- as.numeric.factor(story_new$store_location.coordinates2)
-story_new2<- story_new[!is.na(story_new$lng) & !is.na(story_new$lat),]
+story_df$lng <- as.numeric.factor(story_df$store_location.coordinates1)
+story_df$lat <- as.numeric.factor(story_df$store_location.coordinates2)
+story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 
 #leaflet(data = story_new2) %>% addTiles() %>% addMarkers(~lng, ~lat, popup = ~as.character(category_name))
 
@@ -54,7 +54,7 @@ ui <- fluidPage(
   titlePanel("Iowa Liquor Sales"),
   
   sidebarPanel(
-    selectInput("city", label = "city", choices = levels(unique(story_new2$city)), selected = "AMES")
+    selectInput("city", label = "city", choices = levels(unique(story_df2$city)), selected = "AMES")
   ),
   
   mainPanel(
@@ -75,7 +75,7 @@ server <- function(input, output) {
   
   
   output$map <- renderLeaflet({
-    leaflet(story_new2[story_new2$city == input$city, ]) %>%
+    leaflet(story_df2[story_df2$city == input$city, ]) %>%
       addTiles() %>%
       addMarkers(~lng, ~lat, popup = ~as.character(name))
   })
