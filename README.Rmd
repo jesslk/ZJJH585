@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 We are gonna submit this file!
 
-#### 1. Import the subset of data in the Json form and convert it into a dataframe in R.
+#### 1. Importing the subset of data in the Json form and converting it into a dataframe in R.
 
 ```{r}
 library(tidyverse)
@@ -36,5 +36,23 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
+
+head(story_df)
 ```
+
+#### Data cleaning
+```{r}
+library(lubridate)
+
+# Introduce new variables, "year", "month", and "day".
+
+story_df_new <- story_df %>% 
+  mutate(new_date = gsub("T.*","", date),
+         year=year(new_date),
+         month=month(new_date),
+         day=day(new_date))
+
+head(story_df_new)
+```
+
 
