@@ -6,7 +6,6 @@ library(tidyverse)
 
 
 ## Extract dataset
-
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
 full_url = paste0(basic_url, "?County=Story")
 
