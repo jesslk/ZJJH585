@@ -78,8 +78,8 @@ server <- function(input, output) {
 ####
 
 ui <- navbarPage("Iowa Liquor Sales",
-                             tabPanel("Locations of Liquor Stores", leafletOutput("map", width = "100%", height = "900px"),
-                          absolutePanel(draggable = TRUE, top = 75, left = 1200, bottom = "auto",
+                    tabPanel("Locations of Liquor Stores", leafletOutput("map", width = "100%", height = "900px"),
+                        absolutePanel(draggable = TRUE, top = 75, left = 1200, bottom = "auto",
                                         width = 330, height = "auto",
                                         selectInput("mapparent",
                                                     label = "City",
@@ -96,26 +96,29 @@ ui <- navbarPage("Iowa Liquor Sales",
                      
                      selectInput("Year",
                                  label = "Year", 
-                                 choices = levels(story_new$year), 
+                                 choices = c("2012",
+                                             "2013",
+                                             "2014",
+                                             "2015"), 
                                  selected = "2015")
                      )
                  ),
-                 selectInput("Month", 
+                 
+                     selectInput("Month", 
                              label = "Month",
-                             choices = levels(story_new$month),
+                             choices = levels(as.factors(story_new$month)),
                              selected = "1"),
-                 selectInput("Day",
+                 
+                     selectInput("Day",
                              label = "Day",
-                             choices = levels(story_new$day))
-                          fluidRow(
-                            plotlyOutput("points"),
-                            column(6, 
-                                   plotlyOutput("bar")),
-                            column(6, 
-                                   plotlyOutput("line"))
-                          )
+                             choices = levels(as.factors(story_new$day)), 
+                             selected = "1"),
+                 
+                     selectInput("Stores", 
+                                 label = "Store",
+                                 choices = levels(story_new$name),
+                                 selected = "Cyclone Liquors")
                  )
-)
 
 
 
