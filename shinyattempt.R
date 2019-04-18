@@ -107,12 +107,12 @@ ui <- navbarPage("Iowa Liquor Sales",
                      selectInput("Month", 
                              label = "Month",
                              choices = levels(as.factors(story_new$month)),
-                             selected = "1"),
+                             selected = NULL),
                  
                      selectInput("Day",
                              label = "Day",
                              choices = levels(as.factors(story_new$day)), 
-                             selected = "1"),
+                             selected = NULL),
                  
                      selectInput("Stores", 
                                  label = "Store",
@@ -121,7 +121,13 @@ ui <- navbarPage("Iowa Liquor Sales",
                  )
 
 
-
+server <- function(input, output) {
+  
+  output$temp <- renderPlot({
+    gg <- data.frame(story_new) %>%
+      ggplot(aes(x = , y = story_new$sale_dollars))
+  })
+}
 
 
 server <- function(input, output, session) {
