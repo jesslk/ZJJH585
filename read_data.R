@@ -19,4 +19,17 @@ unlisted.info <- purrr::map2(unlisted,
                              new.distinct.names,
                              .f= ~purrr::set_names(.x, .y))
 
+
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
+
+head(story_df)
+library(lubridate)
+library(stringr)
+library(tidyverse)
+story_df %>% 
+  mutate(new_date = gsub("T.*","", date),
+         year=year(new_date),
+         month=month(new_date),
+         day=day(new_date))
+
+
