@@ -26,7 +26,7 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
-
+View(story_df)
 
 ##
 
@@ -78,8 +78,8 @@ server <- function(input, output) {
 ####
 
 ui <- navbarPage("Iowa Liquor Sales",
-                             tabPanel("Locations of Liquor Stores", leafletOutput("map", width = "100%", height = "900px"),
-                          absolutePanel(draggable = TRUE, top = 75, left = 1200, bottom = "auto",
+                    tabPanel("Locations of Liquor Stores", leafletOutput("map", width = "100%", height = "900px"),
+                        absolutePanel(draggable = TRUE, top = 75, left = 1200, bottom = "auto",
                                         width = 330, height = "auto",
                                         selectInput("mapparent",
                                                     label = "City",
@@ -88,17 +88,37 @@ ui <- navbarPage("Iowa Liquor Sales",
                                         )
                           )
                  ),                 
-                 tabPanel("Sales Trend by Store",
-                          checkboxInput("us", "Show U.S.", FALSE),
-                          fluidRow(
-                            plotlyOutput("points"),
-                            column(6, 
-                                   plotlyOutput("bar")),
-                            column(6, 
-                                   plotlyOutput("line"))
-                          )
+                 titlePanel("Sales Trade by Stores"),
+                 
+                 sidebarLayout(
+                   sidebarPanel(
+                     helpText("Create time series plot for time vs. stores' sale."),
+                     
+                     selectInput("Year",
+                                 label = "Year", 
+                                 choices = c("2012",
+                                             "2013",
+                                             "2014",
+                                             "2015"), 
+                                 selected = "2015")
+                     )
+                 ),
+                 
+                     selectInput("Month", 
+                             label = "Month",
+                             choices = levels(as.factors(story_new$month)),
+                             selected = "1"),
+                 
+                     selectInput("Day",
+                             label = "Day",
+                             choices = levels(as.factors(story_new$day)), 
+                             selected = "1"),
+                 
+                     selectInput("Stores", 
+                                 label = "Store",
+                                 choices = levels(story_new$name),
+                                 selected = "Cyclone Liquors")
                  )
-)
 
 
 
