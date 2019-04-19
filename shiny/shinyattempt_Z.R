@@ -50,7 +50,7 @@ ui <- fluidPage(
     # Sidebar Panel for inputs
     sidebarPanel(
       
-      helpText("Create time series plot for time vs. stores' sale."),
+      helpText("Create Bar Plot for Time vs. Stores' Sale."),
       
       # Input: Select for choosing dataset
       selectInput("Stores",
