@@ -2,6 +2,7 @@ library(shiny)
 library(tidyr)
 library(leaflet)
 library(tidyverse)
+library(plotly)
 library(lubridate)
 
 ## Extract dataset
@@ -76,8 +77,8 @@ ui <- fluidPage(
     ),
           mainPanel(
        fluidRow( 
-        plotOutput("storePlot"),
-       plotOutput("storePlot2")
+         plotlyOutput("storePlot"),
+        plotlyOutput("storePlot2")
        )
     )
   )
@@ -88,17 +89,17 @@ server <- function(input, output) {
   
 
   
-  output$storePlot <- renderPlot({
+  output$storePlot <- renderPlotly({
 
     story_df_new1 %>% filter(name == input$Stores, year == input$Year) %>%
       mutate(month = factor(month)) %>%
       ggplot(aes(x = month, y = sale_sum))+geom_col()
 
   }
- )
+ ) 
   
 
-     output$storePlot2 <- renderPlot({
+     output$storePlot2 <- renderPlotly({
 
       story_df_new %>% filter(name == input$Stores, year == input$Year, month == input$Month) %>%
         mutate(day = as.factor(day), month = as.factor(month), year = as.factor(year), sale_dollars = as.numeric(sale_dollars)) %>%
