@@ -44,7 +44,7 @@ head(story_df)
 ```{r}
 library(lubridate)
 
-# Introduce new variables, "year", "month", and "day".
+# Introduce new variables, "year", "month", "day", and "sale_sum".
 
 story_df_new <- story_df %>% 
   mutate(new_date = gsub("T.*","", date),
@@ -52,7 +52,12 @@ story_df_new <- story_df %>%
          month=month(new_date),
          day=day(new_date))
 
-head(story_df_new)
+
+story_df_new1 <- story_df_new %>% 
+  group_by(name, year, month) %>% 
+  summarise(sale_sum = sum(as.numeric(sale_dollars)))
+
+head(story_df_new1)
 ```
 
 
