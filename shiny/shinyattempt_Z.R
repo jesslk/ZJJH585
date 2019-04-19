@@ -75,9 +75,10 @@ ui <- fluidPage(
       # Main Panel for displaying outputs
     ),
           mainPanel(
-        
-        plotOutput("storePlot")
-      #plotOutput("storePlotD")
+       fluidRow( 
+        plotOutput("storePlot"),
+       plotOutput("storePlot2")
+       )
     )
   )
 )
@@ -95,15 +96,19 @@ server <- function(input, output) {
 
   }
  )
-    # output$storePlotD <- renderPlot({
-    # 
-    #   story_df_new %>% filter(name == input$Stores, year == input$Year, month == input$Month, day == input$Day) %>%
-    #     mutate(day = as.factor(day), month = as.factor(month), year = as.factor(year), sale_dollars = as.numeric(sale_dollars)) %>%
-    #    ggplot(aes(x = day, y = sale_dollars)) + geom_col()
-    # 
-    # 
-    #   })
+  
+
+     output$storePlot2 <- renderPlot({
+
+      story_df_new %>% filter(name == input$Stores, year == input$Year, month == input$Month) %>%
+        mutate(day = as.factor(day), month = as.factor(month), year = as.factor(year), sale_dollars = as.numeric(sale_dollars)) %>%
+       ggplot(aes(x = day, y = sale_dollars)) + geom_col()
+
+
+      })
 }
+
+
 
 
 ###
