@@ -2,5 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-.data
-Test file to make sure that files under data will not be pushed.txt
+data
