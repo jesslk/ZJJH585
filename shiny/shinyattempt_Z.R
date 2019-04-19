@@ -2,6 +2,7 @@ library(shiny)
 library(tidyr)
 library(leaflet)
 library(tidyverse)
+library(lubridate)
 
 ## Extract dataset
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
@@ -28,50 +29,80 @@ story_df_new <- story_df %>%
   mutate(new_date = gsub("T.*","", date),
          year=year(new_date),
          month=month(new_date),
-         day=day(new_date))
+         day=day(new_date)) 
 
-### Shiny Attempt 2
+
+
+story_df_new1 <- story_df_new %>% 
+  group_by(name, year, month) %>% 
+  summarise(sale_sum = sum(as.numeric(sale_dollars)))
+
+
+
+
 ui <- fluidPage(
-  
+  # The App Title
   titlePanel("Sales Trade by Stores"),
-  
+  # Sidebar layout with input and output
   sidebarLayout(
+    
+    # Sidebar Panel for inputs
     sidebarPanel(
+      
       helpText("Create time series plot for time vs. stores' sale."),
       
-      selectInput("Year",
-                  label = "Year", 
-                  choices = levels(as.factors(story_df_new$year)), 
-                  selected = "2015")
-    )
-  ),
-  
-  selectInput("Month", 
-              label = "Month",
-              choices = levels(as.factors(story_new$month)),
-              selected = NULL),
-  
-  selectInput("Stores", 
-              label = "Store",
-              choices = levels(story_new$name),
-              selected = "Cyclone Liquors"))
+      # Input: Select for choosing dataset
+      selectInput("Stores",
+                  label = "Stores",
+                  choices = levels(story_df_new1$name),
+                  selected = "Cyclone Liquors"),
+      
+      selectInput("Year", 
+                  label = "Year",
+                  choices = levels(as.factor(story_df_new1$year)),
+                  selected = NULL),
+      
+      selectInput("Month",
+                  label = "Month",
+                  choices = levels(as.factor(story_df_new1$month)),
+                  selected = NULL),
+      
+      selectInput("Day",
+                  label = "Day",
+                  choices = levels(as.factor(story_df_new$day)),
+                  selected = NULL)
+    
+      # Main Panel for displaying outputs
+    ),
+          mainPanel(
+        
+        plotOutput("storePlot")
+        #plotOutput("storePlotD")
+      )
+  )
+)
 
 
 server <- function(input, output) {
   
-  #story_new_subset <- reactive({
-  # story_new2 %>%
-  #  filter(city == input$city)
-  #})
+
   
-  
-  
-#   output$map <- renderLeaflet({
-#     leaflet(story_new2[story_new2$city == input$city, ]) %>%
-#       addTiles() %>%
-#       addMarkers(~lng, ~lat, popup = ~as.character(name))
-#   })
-#   
+  output$storePlot <- renderPlot({
+    
+    story_df_new1 %>% filter(name == input$Stores, year == input$Year) %>% 
+      mutate(month = factor(month)) %>% 
+      ggplot(aes(x = month, y = sale_sum))+geom_col() 
+   
+  }
+ )
+    # output$storePlotD <- renderPlot({
+    # 
+    #    story_df_new %>% filter(name == input$Stores, year == input$Year, month == input$Month, day == input$Day) %>%
+    #     mutate(day = as.factor(day), month = as.factor(month)) %>%
+    #    ggplot(aes(x = day, y = as.numeric(sale_dollars))) + geom_col()
+    # 
+    # 
+    #   })
 }
 
 
