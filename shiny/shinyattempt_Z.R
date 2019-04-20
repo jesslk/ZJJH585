@@ -93,7 +93,7 @@ server <- function(input, output) {
 
     story_df_new1 %>% filter(name == input$Stores, year == input$Year) %>%
       mutate(month = factor(month)) %>%
-      ggplot(aes(x = month, y = sale_sum))+geom_col()
+      ggplot(aes(x = month, y = sale_sum))+geom_col(colour="black", fill="#DD8888")
 
   }
  ) 

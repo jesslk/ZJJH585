@@ -1,9 +1,8 @@
+
 library(shiny)
 library(tidyr)
 library(leaflet)
-library(stringr)
 library(tidyverse)
-
 
 ## Extract dataset
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
@@ -49,9 +48,6 @@ story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 
 
 
-##Work with drink2
-
-readr::parse_number(drink2$`Store Location`)
 
 ### Shiny Attempt 1
 ui <- fluidPage(
