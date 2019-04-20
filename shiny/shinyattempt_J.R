@@ -1,8 +1,8 @@
 library(shiny)
 library(tidyr)
 library(leaflet)
+library(stringr)
 library(tidyverse)
-
 
 
 ## Extract dataset
@@ -47,6 +47,11 @@ story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 #grp %>% ggplot(aes(x = ymd(new_date), y = sum)) + geom_point() 
 
 
+
+
+##Work with drink2
+
+readr::parse_number(drink2$`Store Location`)
 
 ### Shiny Attempt 1
 ui <- fluidPage(
