@@ -44,12 +44,13 @@ story_df_new <- story_df %>%
 story_df_new1 <- story_df_new %>% 
   group_by(name, year, month) %>% 
   summarise(sale_sum = sum(as.numeric(sale_dollars)))
+
 ##Remove NAs
 
 story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 
 
-##### Shiny
+##### Shiny starts here!
 
 ui <- fluidPage(
   titlePanel("Story County Liquor Sales"),
