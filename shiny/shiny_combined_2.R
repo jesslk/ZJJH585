@@ -1,23 +1,4 @@
----
-title: "README"
-author: "Zhenzhen Chen, Jessica Kueon, Hana Lee, Jing Zhao"
-date: "April 17, 2019"
-output: github_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-## Link
-[https://github.com/hnlee1428/ZJJH585](https://github.com/hnlee1428/ZJJH585)
-
-
-
-#### 1. Importing the subset of data in the Json form and converting it into a dataframe in R.
-
-```{r}
 library(shiny)
 library(tidyr)
 library(mapview)
@@ -26,7 +7,10 @@ library(plotly)
 library(lubridate)
 library(tidyverse)
 
-## procedure to get the same data as above
+
+
+## Extract dataset from the website 
+
 basic_url <- "https://data.iowa.gov/resource/m3tr-qhgy.json"
 full_url = paste0(basic_url, "?County=Story")
 
@@ -46,14 +30,8 @@ unlisted.info <- purrr::map2(unlisted,
                              .f= ~purrr::set_names(.x, .y))
 
 story_df <- do.call(plyr::rbind.fill, unlisted.info)
-
-head(story_df)
-```
-
-#### Data cleaning
-
-```{r}
 as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+
 story_df$lng <- as.numeric.factor(story_df$store_location.coordinates1)
 story_df$lat <- as.numeric.factor(story_df$store_location.coordinates2)
 
@@ -71,13 +49,12 @@ story_df_new1 <- story_df_new %>%
   group_by(name, year, month) %>% 
   summarise(sale_sum = sum(as.numeric(sale_dollars)))
 
-
-##Remove NAs
-story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 story_total2 <- story_df2 %>% group_by(name, city, lng, lat) %>% summarise(Total_Sales_Dollars = sum(as.numeric(sale_dollars))) 
 
 
+##Remove NAs
 
+story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 
 
 ### Categorize sales
@@ -91,17 +68,9 @@ story_total2 <- story_total2 %>%
 
                                                                                                                           ifelse(Total_Sales_Dollars >= 30000 & Total_Sales_Dollars <= 60000, "Less than 60000", NA))))))
 ###
-```
 
 
-
-## Create Shiny
-
-```{r}
-
-## For spatial, we have two separate maps.
-## First map displays liquor stores in selected cities, and second map shows liquor stores by sales records. 
-
+##### Shiny starts here!
 
 ui <- fluidPage(
   titlePanel("Story County Liquor Sales"),
@@ -196,6 +165,7 @@ server <- function(input, output) {
   
   
   output$storePlot2 <- renderPlotly({
+    
     story_df_new %>% filter(name == input$Stores, year == input$Year, month == input$Month) %>%
       mutate(day = as.factor(day), month = as.factor(month), year = as.factor(year), sale_dollars = as.numeric(sale_dollars)) %>%
       ggplot(aes(x = day, y = sale_dollars)) + geom_col(colour = "black", fill = "#7fcdbb")
@@ -211,4 +181,4 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 
 
-```
+

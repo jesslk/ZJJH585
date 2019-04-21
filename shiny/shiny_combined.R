@@ -1,7 +1,10 @@
 
 library(shiny)
 library(tidyr)
+library(mapview)
 library(leaflet)
+library(plotly)
+library(lubridate)
 library(tidyverse)
 
 
@@ -45,6 +48,9 @@ story_df_new1 <- story_df_new %>%
   group_by(name, year, month) %>% 
   summarise(sale_sum = sum(as.numeric(sale_dollars)))
 
+story_total2 <- story_df_new %>% group_by(name, lng, lat) %>% summarise(Total_Sales = sum(as.numeric(sale_dollars)), Total_Liters = sum(as.numeric(sale_liters))) 
+
+
 ##Remove NAs
 
 story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
@@ -56,13 +62,14 @@ ui <- fluidPage(
   titlePanel("Story County Liquor Sales"),
     mainPanel(
       tabsetPanel(
-        tabPanel("Liquor Sales Map",   sidebarPanel(
+        tabPanel("Liquor Sales Map",  sidebarPanel(
           selectInput("city", label = "city", choices = levels(unique(story_df2$city)), selected = "AMES")
-        ),
-        
+        , selectInput("circlesizevar", "Circle Size Variable", choices = c("None"
+                                                                           = "none","The Total Sales 2012 - 2015($)" = "Total_Sales"), selected = "None")),
+  
         mainPanel(
           tabsetPanel(
-            tabPanel("Cornfield", leafletOutput("map"))
+            tabPanel("Cornfield", leafletOutput("map1", width = 800, height = 500))
           )
         )), 
         tabPanel("Liquor Sales Trend Analysis ",
@@ -88,15 +95,7 @@ ui <- fluidPage(
                      selectInput("Month",
                                  label = "Month",
                                  choices = levels(as.factor(story_df_new1$month)),
-                                 selected = NULL),
-                     
-                     selectInput("Day",
-                                 label = "Day",
-                                 choices = levels(as.factor(story_df_new$day)),
-                                 selected = NULL)
-                     
-                     # Main Panel for displaying outputs
-                   ),
+                                 selected = NULL)),
                    mainPanel(
                      fluidRow( 
                        plotlyOutput("storePlot"),
@@ -120,17 +119,35 @@ ui <- fluidPage(
   
 server <- function(input, output) {
   
+  story_df2_subset <- reactive({
+    story_df2 %>%
+      filter(city == input$city)
+  })
   
-  output$map <- renderLeaflet({
-    leaflet(story_df2[story_df2$city == input$city, ]) %>%
+  story_total2_subset <- reactive({
+    story_total %>%
+      filter(name == input$city)
+  })
+  
+  output$map1 <- renderLeaflet({
+    leaflet(data = story_df2_subset()) %>%
       addTiles() %>%
       addMarkers(~lng, ~lat, popup = ~as.character(name))
+  })
+  output$map2 <- renderLeaflet({
+    leaflet(data = story_total2_subset()) %>%
+      addTiles() %>%
+      addCircleMarkers(
+        radius = sqrt(`Total_Sales`),
+        color = "skyblue2",
+        stroke = FALSE, fillOpacity = 0.5
+      )
+      
   })
   
   
   output$storePlot <- renderPlotly({
-    
-    story_df_new1 %>% filter(name == input$Stores, year == input$Year) %>%
+      story_df_new1 %>% filter(name == input$Stores, year == input$Year) %>%
       mutate(month = factor(month)) %>%
       ggplot(aes(x = month, y = sale_sum))+geom_col(colour="black", fill="#DD8888")
     

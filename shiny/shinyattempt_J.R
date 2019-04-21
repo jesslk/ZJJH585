@@ -48,6 +48,9 @@ story_df2<- story_df[!is.na(story_df$lng) & !is.na(story_df$lat),]
 
 
 
+##Work with drink2
+
+readr::parse_number(drink2$`Store Location`)
 
 ### Shiny Attempt 1
 ui <- fluidPage(
@@ -55,7 +58,10 @@ ui <- fluidPage(
   titlePanel("Iowa Liquor Sales"),
   
   sidebarPanel(
-    selectInput("city", label = "city", choices = levels(unique(story_df2$city)), selected = "AMES")
+    selectInput("city", label = "city", choices = levels(unique(story_df2$city)), selected = "AMES"),
+    selectInput("circlesizevar", "Circle Size Variable", choices = c("None"
+                                                                     = "none","The total Sales 2012 - 2015" = "Total_Sales","The Total Volume of Alcohol Sold " = "Total_Liters"
+    , selected = "None"))
   ),
   
   mainPanel(
