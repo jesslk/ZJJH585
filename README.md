@@ -8,6 +8,8 @@ Link
 
 <https://github.com/hnlee1428/ZJJH585>
 
+#### Objective: Make a R Shiny to visualize Iowa Liquor Sales dataset <https://data.iowa.gov/Sales-Distribution/Iowa-Liquor-Sales/m3tr-qhgy>
+
 #### 1. Importing the subset of data in the Json form and converting it into a dataframe in R.
 
 ``` r
